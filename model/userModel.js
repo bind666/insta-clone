@@ -6,7 +6,7 @@ const userSchema = new Schema({
     username: {
         type: String,
         required: [true, "Please provide username."],
-        // unique: true
+        unique: true
     },
     email: {
         type: String,
@@ -15,7 +15,8 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        // select:false
     },
     fullName: {
         type: String,
@@ -31,7 +32,15 @@ const userSchema = new Schema({
     coverPhoto: {
         type: String,
         default: 'photo.png'
-    }
+    },
+    refreshToken:{
+        type:String,
+        default:null
+    },
+    accessToken:{
+        type:String,
+        default:null
+    },
 }, {
     timestamps: true
 });
