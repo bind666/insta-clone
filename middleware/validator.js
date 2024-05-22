@@ -34,5 +34,20 @@ const validateLoginUser = (req, res, next) => {
     next();
 }
 
+const validateFetchReq = (req, res, next) => {
+    const validationSchema = joi.object({
+        page: joi.number().default(1).disallow(0),
+        limit: joi.number().default(10).disallow(0),
+        sort: joi.string().default("asc").disallow(""),
+    })
 
-export { validateRegisterUser, validateLoginUser };
+    const { error, value } =  validationSchema.validate(req.query);
+    if (error) {
+        return next(createError(422, error.message))
+    }
+    req.query = value;
+    next()
+}
+
+
+export { validateRegisterUser, validateLoginUser, validateFetchReq };

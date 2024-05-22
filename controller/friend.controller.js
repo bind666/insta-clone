@@ -81,5 +81,23 @@ const acceptRejectFriend = asyncHandler(async (req, res, next) => {
 
 })
 
+const fetchFriends = asyncHandler(async (req, res, next) => {
+    const { page, limit, sort } = req.query
+    const friends = await userModel.find({}).skip((page - 1) * 10).limit(limit).sort(sort).
+        select("-refreshToken -accessToken -password -createdAt -__v -updatedAt -coverPhoto -bio")
 
-export { sendFriendRequest, acceptRejectFriend };
+    res.status(200).json(new ApiResponse(friends, "friends fetched"))
+})
+
+const fetchFriendRequests = asyncHandler(async (req, res, next) => {
+    const { _id } = req.user;
+    const { page, limit, sort } = req.query
+
+    const requests = await friendModel.find({ senderID: _id }).skip((page - 1) * 10).limit(limit).sort(sort)
+
+    res.status(200).json(new ApiResponse(requests, "friends requests fetched"))
+})
+
+
+
+export { sendFriendRequest, acceptRejectFriend, fetchFriends, fetchFriendRequests };
