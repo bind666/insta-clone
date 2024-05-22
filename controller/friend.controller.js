@@ -93,7 +93,8 @@ const fetchFriendRequests = asyncHandler(async (req, res, next) => {
     const { _id } = req.user;
     const { page, limit, sort } = req.query
 
-    const requests = await friendModel.find({ senderID: _id }).skip((page - 1) * 10).limit(limit).sort(sort)
+    const requests = await friendModel.find({ receiverID: _id }).skip((page - 1) * 10).limit(limit).sort(sort)
+    .select("-createdAt -updatedAt -__v")
 
     res.status(200).json(new ApiResponse(requests, "friends requests fetched"))
 })
