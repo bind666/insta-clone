@@ -22,7 +22,6 @@ const auth = asyncHandler(async (req, res, next) => {
         return next(createError(401, "Token expired."))
     }
 
-console.log(isValid,accessToken);
     const user = await userModel.findOne({ email: isValid.email, accessToken })
     if (!user) {
         return next(createError(422, "invalid user."))
