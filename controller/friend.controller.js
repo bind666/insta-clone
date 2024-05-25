@@ -24,7 +24,6 @@ const sendFriendRequest = asyncHandler(async (req, res, next) => {
 
     const isFriendExists = await friendModel.findOne({ senderID, receiverID })
 
-    //some confusion about isFriendExists
     if (isFriendExists) {
         return next(createError(409, "friend request bheji jaa chuki hai"))
     }
@@ -90,12 +89,16 @@ const fetchFriends = asyncHandler(async (req, res, next) => {
 })
 
 const fetchFriendRequests = asyncHandler(async (req, res, next) => {
-    const { _id } = req.user;
+    const { _id: receiverID } = req.user;
     const { page, limit, sort } = req.query
 
-    const requests = await friendModel.find({ receiverID: _id }).skip((page - 1) * 10).limit(limit).sort(sort)
-    .select("-createdAt -updatedAt -__v")
+    const requests = await friendModel.find({ receiverID }).skip((page - 1) * 10).limit(limit).sort(sort)
+        .select("-createdAt -updatedAt -__v")
 
+    // console.log(requests.toString());
+    if (requests == "") {
+        return next(createError(409, "no request found"))
+    }
     res.status(200).json(new ApiResponse(requests, "friends requests fetched"))
 })
 

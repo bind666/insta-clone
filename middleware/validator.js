@@ -39,12 +39,20 @@ const validateFetchReq = (req, res, next) => {
         page: joi.number().default(1).disallow(0),
         limit: joi.number().default(10).disallow(0),
         sort: joi.string().default("asc").disallow(""),
+        type: joi.string().default("public").disallow(""),
+        id: joi.string(),
     })
 
-    const { error, value } =  validationSchema.validate(req.query);
+    const { error, value } = validationSchema.validate(req.query);
     if (error) {
         return next(createError(422, error.message))
     }
+
+    console.log(value.type);
+    if (value.type === "private" && value.id === undefined || value.id === "") {
+        return next(createError(422, "id required."))
+    }
+
     req.query = value;
     next()
 }
